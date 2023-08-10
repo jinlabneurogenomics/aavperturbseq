@@ -42,8 +42,6 @@ files = os.listdir(fastq_dir)
 reads = []
 discard = []
 primer_seq1 = 'GACGAGTCGGATCTCCCTTTGGGCCGCCTCCCCGCATCGATACCGTCAATTG'
-            # 'GACGAGTCGGATCTCCCTTTGGGCCGCCTCCCCGCATCGATACCGTCGACCT' 4978 reads most common error seq
-# align = 'gacgagtcggatctccctttgggccgcctccccgcatcgataccgtCAATTGNNNNNNNNNNNNACGGAAATACGATGTCGGGANNNNNNNNNNNNGAGCtcgctgatcagcctcgactgtgccttctagttgccagccatctgttgtttgcccctcccccgtgccttccttgaccctggaaggtgccactcccactgtcctttcctaataaaatgaggaaattgcatcgc'.upper()
 # primer_seq2 = 'ACGGAAATACGATGTCGGGA'
 for fn in files:
     with open(fastq_dir + fn, 'r') as fh:
