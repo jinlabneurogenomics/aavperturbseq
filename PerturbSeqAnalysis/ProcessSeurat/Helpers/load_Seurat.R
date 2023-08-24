@@ -1,4 +1,6 @@
-
+####
+###This code starts with a matrix with expression info and creates a basic Seurat object with it
+####
 library(Seurat)
 library(stringr)
 library(Matrix)
@@ -95,43 +97,5 @@ return(seur)
 
 }
 
-loadPackages<-function()
-{
-
-source("/psych/genetics_data/ssimmons/SingleCell2/Clust_Graph.R")
-source("/psych/genetics_data/ssimmons/SingleCell2/LmmCellType.R")
-source("/psych/genetics_data/ssimmons/SingleCell2/SumDE.R")
-source("/psych/genetics_data/ssimmons/SingleCell2/applyMast.R")
-source("/psych/genetics_data/ssimmons/SingleCell2/drawCellProp.R")
-source("/psych/genetics_data/ssimmons/SingleCell2/niceDraw.R")
-
-}
-
-library(dplyr)
-library(tidyr)
-##Returns the percent cells in each cluster expressing given genes
-AveExpress<-function(seur,genes.use=c(),percent=T)
-{
-genes.use=intersect(genes.use,rownames(seur@data))
-if(length(genes.use)<1){return(c())}
-
-dat=data.frame(as.matrix(t(seur@data[genes.use,])))
-
-dat["clust"]=seur@ident
-
-if(percent)
-{
-dat<- dat %>% gather(Gene,Expression,-clust)%>% group_by(Gene,clust) %>% summarise(Percent=mean(Expression>0)) %>% spread(Gene,Percent) %>% as.data.frame()
-}
-else
-{
-dat<- dat %>% gather(Gene,Expression,-clust)%>% group_by(Gene,clust) %>% summarise(Average=log(mean(exp(Expression+1)))) %>% spread(Gene,Average) %>% as.data.frame()
-}
-rownames(dat)=dat[,"clust"]
-
-dat=dat[,2:dim(dat)[2]]
-
-return(dat)
-}
 
 

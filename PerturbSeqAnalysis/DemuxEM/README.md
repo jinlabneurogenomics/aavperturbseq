@@ -15,10 +15,13 @@ nextflow $codedir/RunDemux.nf [args]
 ```
 
 The arguments you can use are:
-[To add]
+`--inDir:` The name of a CellRanges outs directory, assumes include Crispr counts in analysis.
+
+`--demuxCode:` A pointer to the demuxEM binary. By default will look in the bin subdirectory of this directory.
+
+`--outdir:` The name of the out directory, by default is a directory DemuxEM in the CellRanger outs directory.
 
 # Output
-
 
 The output will be a file named Results.csv in the specified output directory. This is a table with the assignment for each cell.
 

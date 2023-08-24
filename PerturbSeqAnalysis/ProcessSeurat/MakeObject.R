@@ -1,3 +1,7 @@
+####
+###This file contains the code used to go from CellRanger output to clustered and annotated Seurat object
+####
+
 source("Helpers/RemoveDoublet.R")  
 source("Helpers/Run_scGBM.R")  
 source("Helpers/load_Seurat.R")
