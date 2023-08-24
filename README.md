@@ -3,8 +3,7 @@ Zheng et al 2023
 
 ## Perturb-seq clustering and QC
 
-SEAN
-
+See PerturbSeqAnalysis and the associated documentation for the code used in upstream analysis of the Perturb-seq data (starting with CellRanger output through clustering and cell type identification).
 
 ## Perturb-seq downstream analysis
 **aav_downstream.R**: Main driver script that calls each of the below  
