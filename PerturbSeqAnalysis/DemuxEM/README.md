@@ -15,6 +15,7 @@ nextflow $codedir/RunDemux.nf [args]
 ```
 
 The arguments you can use are:
+
 `--inDir:` The name of a CellRanges outs directory, assumes include Crispr counts in analysis.
 
 `--demuxCode:` A pointer to the demuxEM binary. By default will look in the bin subdirectory of this directory.
