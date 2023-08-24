@@ -44,7 +44,7 @@ print("Make object!")
 seur<-CreateSeuratObject(dat,"Seurat",min.features=minGenes)#,normalization.method="LogNormalize",scale.factor=1000000)
 }
 
-seur<-NormalizeData(seur,normalization.method="LogNormalize",scale.factor=1000000)
+seur<-NormalizeData(seur,normalization.method="LogNormalize",scale.factor=10000)
 
 print("Get variable genes!")
 seur<-FindVariableFeatures(seur)
