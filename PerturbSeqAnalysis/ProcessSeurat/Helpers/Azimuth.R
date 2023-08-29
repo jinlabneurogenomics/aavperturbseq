@@ -29,6 +29,8 @@ if (FALSE) {
 
 seur <- TransferData(reference = reference_map,query=seur,dims = 1:50,anchorset = anchors,refdata = refdata,n.trees = 20,store.weights = TRUE)
 
+seur@meta.data
+
 }
 
 

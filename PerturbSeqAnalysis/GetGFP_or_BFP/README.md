@@ -16,6 +16,9 @@ nextflow $pathtocode/GetCounts.GFP.UMITools.nf [args]
 
 where pathtocode is the path to the directory containing GetCounts.GFP.UMITools.nf. The arguments one can give are:
 
+`--fa:` The fasta with the sequences you are interested in looking for. One entry per sequence. Required.
 
-[TO BE ADDED]
+`--bam:` The CellRanger (or similiar) bam from the single cell experiment. Required.
+
+`--outdir:` The name of the output directory. Set to output by default.
 
