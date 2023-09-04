@@ -20,10 +20,5 @@ See PerturbSeqAnalysis and the associated documentation for the code used in ups
 fastq_barcodemapping.py: Count number of barcodes for each AAV variant  
 deseq2.R: Identify significantly enriched AAV variants
 
-
-### AAV serotype secondary screen: AAV barcode-single cell analysis
-XIN
-
-
 ### HypPB insertion site genome-wide analysis
 annotations.R: annotate insertion sites
