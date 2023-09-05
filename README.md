@@ -23,3 +23,7 @@ deseq2.R: Identify significantly enriched AAV variants
 
 ### HypPB insertion site genome-wide analysis
 annotations.R: annotate insertion sites
+
+### GFP intensity quantification in HT22 time-lapse imaging
+
+
