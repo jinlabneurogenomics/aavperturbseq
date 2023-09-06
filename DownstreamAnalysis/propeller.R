@@ -2,27 +2,6 @@ library(Seurat)
 library(speckle)
 library(limma)
 
-######
-# DONT USE THIS
-######
-# issues with duplicateCorrelation
-# assumptions that are probably best to avoid (the use of duplicateCorrelation is probably the main reason that pseudocell has issues--it doesn't fit a standard mixed model), namely that each variable (in this case each cell type) has the same amount of batch effect (in some sense), which is not likely to be a reasonable assumption
-# Also, it does not correctly estimate p-values (it does not take into account the uncertainty in the estimation of the random effects when calculating p-values, so leads to smaller p-values than it would get normally).
-# run propeller with random effect
-RunPropellerRand <- function(props, batch, treat, out.prefix="propeller_result") {
-# design matrix specification: (1) group information is always first and (2) there is NO intercept
-mm.treat = model.matrix(~treat)
-dupcor = duplicateCorrelation(props$TransformedProps, design=mm.treat, block=batch)
-fit1 = lmFit(props$TransformedProps, design=mm.treat, block=batch, correlation=dupcor$consensus)
-fit1 <- eBayes(fit1)
-print(summary(decideTests(fit1)))
-res=topTable(fit1, number=Inf)
-print(res)
-write.table(res, paste0(out.prefix, ".tsv"), sep='\t', quote=F, row.names=T, col.names=NA)
-return(res)
-}
-
-
 my.propeller.ttest <- function(prop.list=prop.list, design=design,
                             contrasts=contrasts, robust=robust, trend=trend,
                             sort=sort)

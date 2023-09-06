@@ -15,10 +15,17 @@ n.sv=1
 modSv = mod
 #if (n.sv > 0) {
 #if (n.sv > 1) {print("Only include one surrogate variable");n.sv=1}
-svobj = sva(dat.bulk, mod, mod0, n.sv=n.sv)
-svs = svobj$sv
-colnames(svs) = paste0("SV", 1:ncol(svs))
-modSv = cbind(mod, svs)  # add SVs to model design
+tryCatch(
+	{
+	svobj = sva(dat.bulk, mod, mod0, n.sv=n.sv)
+	svs = svobj$sv
+	colnames(svs) = paste0("SV", 1:ncol(svs))
+	modSv = cbind(mod, svs)  # add SVs to model design
+	},
+	error=function(cond) {
+		message("sva failed revert to using the provided form")
+	}
+)
 #}
 # edgeR
 dge = DGEList(counts=dat.bulk, samples=meta.dat$sample, group=meta.dat$assignment)
