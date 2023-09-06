@@ -25,5 +25,5 @@ deseq2.R: Identify significantly enriched AAV variants
 annotations.R: annotate insertion sites
 
 ### GFP intensity quantification in HT22 time-lapse imaging
-
+GFPcount.cpproj: Cell profiler script to quantify the GFP intensity in HT22 cells
 
