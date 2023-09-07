@@ -4,7 +4,7 @@ DemuxEM is a tool built to assign cells/nuclei to samples using hashing barcodes
 
 # How to prepare computational environment
 
-To run this pipeline, need python installed, with the packages pandas and pegasusio installed. In addition, need demuxEM to be installed (the demuxEM binary should either be placed in the bin directory in this repo or needs a pointer to the demuxEM command). Also need to have nextflow downloaded. Finally, need to have the context of this directory downloaded to somewhere on your local machine (call the directory codedir)
+To run this pipeline, need python installed, with the packages pandas and pegasusio installed. In addition, need demuxEM to be installed (the demuxEM binary should either be placed in the bin directory in this repo or needs a pointer to the demuxEM command). Also need to have nextflow downloaded. Finally, need to have the contents of this directory downloaded to somewhere on your local machine (call the directory codedir)
 
 # Running the code
 
@@ -26,3 +26,12 @@ The arguments you can use are:
 
 The output will be a file named Results.csv in the specified output directory. This is a table with the assignment for each cell.
 
+# Run with downsampling
+
+The above command runs demuxEM without downsampling. To run with downsampling, use:
+
+```
+nextflow $codedir/RunDemuxDS.nf [args]
+```
+
+The arguments are the same as without downsampling, except `--numDS` which is the number of UMIs you want to downsample to (default 50,000). In particular, this will cause the UMI from each gRNA to be downsampled to the number passed (up to random noise). For guides with less than this many UMIs no downsampling will occur.

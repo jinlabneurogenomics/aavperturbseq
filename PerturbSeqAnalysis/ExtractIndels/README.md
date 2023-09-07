@@ -12,7 +12,22 @@ This code (CodeToUse.sh) extracts a region of interest from the 10X bam file (us
 
 Can then run `source CodeToUse.sh $outdir $reg $dir $cellstopert` to get one bam file per perturbation in the outdir.
 
-##Count Indels
+## Count Indels
 
-GetInsertDelete.py is used to count the number of indels in a particular region in a particular bam file. Designed to be run after the CodeToUse.sh step, but can be run on any bam file. Will add details.
+GetInsertDelete.py is used to count the number of indels per cell in a particular region in a particular bam file. Designed to be run after the CodeToUse.sh step, but can be run on any bam file. For a given bam file and region can run:
+
+```
+import GetInsertDelete as GID
+bamfile="/path/to/bam"
+chrom="chromosome_of_region"
+start=start_position_region
+end=end_position_region
+dat=GID.GetInsertDel(bamfile,chrom,start,end)
+```
+
+Can also run on all bams in a directory with GetInsertDel_directory (pass dir, a string pointing to a directory, instead of a bamfile, the dir string can contain regular expressions allowing multiple directories at once), and on multiple regions with GetInsertDel_regions (pass it the directory and a list of regions, where each region is a list with 4 entries: chromosomse of region, start of region, end position of region, and name of region (the name is up to you)). More details will be added. 
+
+
+
+
 
