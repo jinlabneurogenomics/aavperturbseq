@@ -11,7 +11,7 @@ See PerturbSeqAnalysis and the associated documentation for the code used in ups
 **propeller.R**: Method to detect cell type proportion changes  
 **run_sva_edger.R**: Identify DEGs using `edgeR` with 1 surrogate variable from `sva`  
 **Enrich_FGSEA_new.R**: Identify enriched GO terms  
-
+**mod.hidden.mult.R**: Elastic net based method to find the most affected cells for each perturbation
 
 ## Other related analysis
 
