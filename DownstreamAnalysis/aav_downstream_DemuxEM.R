@@ -299,3 +299,77 @@ dev.off()
 }
 
 
+########################################
+# Most affected cell populations
+########################################
+setwd("../../affected_cells")
+print("HiDDEN!")
+library(RColorBrewer)
+source("mod.hidden.mult.R")
+
+# UMAP cell types
+pdf("umap_cell_type.pdf", height=9, width=9)
+MyDimPlot(seur, alpha=1, group.by='CellType', pt.size=1, label=T, repel=T, label.size=5, label.box=T) + NoLegend()
+dev.off()
+
+# UMAP pert
+pdf("umap_pert.pdf", height=10, width=9)
+MyDimPlot(seur, alpha=1, group.by='pert', pt.size=1, legend.text.size=16)
+dev.off()
+
+# UMAP guide
+pdf("umap_guide.pdf", height=10, width=9)
+MyDimPlot(seur, alpha=1, group.by='assignment', pt.size=1, legend.text.size=16)
+dev.off()
+
+# Hidden method (multinomial version)
+# guide level
+ret = HiddenGLMNET(seur, 'assignment')
+saveRDS(ret, "hidden.result.guide.rds")
+
+pred = ret$Prediction
+colnames(pred) = paste0("hidden.pred.", colnames(pred))
+seur <- AddMetaData(seur, as.data.frame(pred))
+
+lim = max(abs(max(pred)), abs(min(pred))) * c(-1,1)
+feas=c(paste0('hidden.pred.',levels(seur$assignment))[5:16], paste0('hidden.pred.',levels(seur$assignment))[1:4])
+
+plot_feature2(seur, feas,
+        title="Most affected cells per condition",
+        nc=3,
+        limits=lim,
+        size=4,
+        dev='pdf',
+        alpha=0.7,
+        filename="hidden.pred.guide.color_v2.pdf")
+
+plot_feature2(seur, feas,
+        title="Most affected cells per condition",
+        nc=3,
+        #cols=colorRampPalette(colors=c("#004b88", "gray90", "red3"))(50),
+        center_cols=T,
+        size=4,
+        dev='pdf',
+        alpha=0.7,
+        filename="hidden.pred.guide.color_v1.pdf")
+
+# Correlation between each pair of HiDDEN scores
+library(Hmisc)
+library(corrplot)
+
+res1 <- rcorr(pred, type='pearson')
+res2 <- rcorr(pred, type='spearman')
+#rdbu = c('#67001F', '#B2182B', '#D6604D', '#F4A582', '#FDDBC7', '#FFFFFF','#D1E5F0', '#92C5DE', '#4393C3', '#2166AC', '#053061')
+#cols=rev(colorRampPalette(rdbu)(100))
+
+pdf("heatmap.corr.pearson.pdf")
+corrplot(res1$r, type = "upper", order = "original", tl.col = "black", tl.srt = 45,
+        title='Pearson correlation of HiDDEN scores', mar=c(0,0,1,0))
+dev.off()
+
+pdf("heatmap.corr.spearman.pdf")
+corrplot(res2$r, type = "upper", order = "original", tl.col = "black", tl.srt = 45,
+        title='Spearman correlation of HiDDEN scores', mar=c(0,0,1,0))
+dev.off()
+
+

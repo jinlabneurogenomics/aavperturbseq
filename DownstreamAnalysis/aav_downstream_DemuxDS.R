@@ -182,6 +182,7 @@ dev.off()
 
 
 
+
 ########################################
 # DEG 
 ########################################
@@ -283,4 +284,113 @@ dev.off()
 }
 
 
+
+########################################
+# Most affected cell populations
+########################################
+library(RColorBrewer)
+source("mod.hidden.mult.R")
+
+# HiDDEN-based method (multinomial version)
+# guide level analysis
+ret = HiddenGLMNET(seur, 'assignDS')
+saveRDS(ret, "hidden.result.guide.rds")
+
+pred = ret$Prediction
+colnames(pred) = paste0("hidden.pred.", colnames(pred))
+pred[pred < -2] = -2
+pred[pred > 2] = 2
+seur <- AddMetaData(seur, as.data.frame(pred))
+
+lim=c(-2,2)
+feas=c(paste0('hidden.pred.',levels(seur$assignDS))[5:16], paste0('hidden.pred.',levels(seur$assignDS))[1:4])
+
+plot_feature2(seur, feas,
+        title="Most affected cells per condition",
+        nc=3,
+        limits=lim,
+        size=4,
+        dev='pdf',
+        alpha=0.7,
+        filename="hidden.pred.guide.color_new2.pdf")
+
+plot_feature2(seur, feas,
+        title="Most affected cells per condition",
+        nc=3,
+        #cols=colorRampPalette(colors=c("#004b88", "gray90", "red3"))(50),
+        center_cols=T,
+        size=4,
+        dev='pdf',
+        alpha=0.7,
+        filename="hidden.pred.guide.color_v1.pdf")
+
+
+# Correlation between each pair of HiDDEN scores
+library(Hmisc)
+library(corrplot)
+
+res1 <- rcorr(pred, type='pearson')
+res2 <- rcorr(pred, type='spearman')
+#rdbu = c('#67001F', '#B2182B', '#D6604D', '#F4A582', '#FDDBC7', '#FFFFFF','#D1E5F0', '#92C5DE', '#4393C3', '#2166AC', '#053061')
+#cols=rev(colorRampPalette(rdbu)(100))
+
+pdf("heatmap.corr.pearson.pdf")
+corrplot(res1$r, type = "upper", order = "original", tl.col = "black", tl.srt = 45,
+        title='Pearson correlation of HiDDEN scores', mar=c(0,0,1,0))
+dev.off()
+
+pdf("heatmap.corr.spearman.pdf")
+corrplot(res2$r, type = "upper", order = "original", tl.col = "black", tl.srt = 45,
+        title='Spearman correlation of HiDDEN scores', mar=c(0,0,1,0))
+dev.off()
+
+
+# Find genes correlating with the Hidden score
+gs = c("Foxg1_1","Foxg1_2","Foxg1_3")
+for (g in gs) {
+sc = seur[[paste0('hidden.pred.', g)]]
+rs.genes = rowSums(seur@assays$RNA@data)
+genes = names(rs.genes)[rs.genes>0]
+print(length(genes))
+
+dat = t(as.matrix(seur@assays$RNA@data[genes,]))
+res = cor(dat, sc, method='spearman')
+colnames(res) = "corr"
+
+tab = res %>% as.data.frame() %>% arrange(corr)
+tab$x = 1:nrow(tab)
+#tab$label = rownames(tab)
+#tab[abs(tab[,1])<0.3,'label'] = ""
+tab$color = "pos.corr"
+tab$color[tab[,1]<0] = 'neg.corr'
+tab$color = factor(tab$color, levels=c("pos.corr","neg.corr"))
+
+# label only DEGs
+de.path = "/stanley/levin_dr/kwanho/projects/AAV_Xin/DEG/DemuxDS"
+fs = list.files(de.path, pattern="edgeR_LRT")
+cur.fs = file.path(de.path, grep(g, fs, value=T))
+res.list = lapply(cur.fs, read.csv, sep='\t', row.names=1)
+sig.gene.list = lapply(res.list, function(x) subset(x, padj<0.05))
+sig.genes = unique(rownames(do.call(rbind, sig.gene.list)))
+sig.genes = intersect(sig.genes, rownames(tab))
+print(length(sig.genes))
+
+tab$label = rownames(tab)
+tab[!rownames(tab) %in% sig.genes, 'label'] = ""
+
+write.table(tab, paste0("table_cor.",g,"_pred.gene_exp.tsv"), sep='\t', quote=F, row.names=T, col.names=NA)
+
+pdf(paste0("scatter_cor_",g,"_pred_and_gene_exp.pdf"), height=7, width=12)
+print(tab %>% ggplot(aes(x=x, y=corr, label=label)) +
+        geom_point() + theme_minimal() + ggtitle(g))
+print(tab %>% ggplot(aes(x=x, y=corr, label=label)) +
+        geom_point() +
+        geom_text_repel(aes(color=color),
+                #min.segment.length=0,
+                #box.padding=unit(0.35, "lines"),
+                max.overlaps=Inf) +
+                #max.overlaps=1000, nudge_x=-5, direction='y', nudge_y=tab[,1], hjust='left') +
+        theme_minimal() + ggtitle(g))
+dev.off()
+}
 
